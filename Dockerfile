@@ -1,55 +1,31 @@
-# Stage 1: Build
+# Base image
 FROM node:20-alpine AS builder
 
-# Set working directory
-WORKDIR /app
+# Create app directory
+WORKDIR /usr/src/app
 
-# Copy package files
+# Copy application dependency manifests to the container image.
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
 
-# Install ALL dependencies (including devDependencies for build)
-RUN npm ci && npm cache clean --force
+# Install app dependencies
+RUN npm ci
 
-# Copy source code
+# Bundle app source
 COPY . .
 
-# Build application
+# Creates a "dist" folder with the production build
 RUN npm run build
 
-# Stage 2: Production
-FROM node:20-alpine AS production
+# Start a new stage for a smaller production image
+FROM node:20-alpine
 
-# Install dumb-init for proper signal handling
-RUN apk add --no-cache dumb-init
+WORKDIR /usr/src/app
 
-# Create app user
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nestjs -u 1001
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /usr/src/app/dist ./dist
+COPY --from=builder /usr/src/app/package*.json ./
 
-# Set working directory
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-
-# Install production dependencies only
-RUN npm ci --only=production && npm cache clean --force
-
-# Copy built application from builder
-COPY --from=builder --chown=nestjs:nodejs /app/dist ./dist
-
-# Switch to non-root user
-USER nestjs
-
-# Expose application port
 EXPOSE 3000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3000/api', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
-
-# Use dumb-init to handle signals properly
-ENTRYPOINT ["dumb-init", "--"]
-
-# Start application
-CMD ["node", "dist/main.js"]
+CMD ["npm", "run", "start:prod"]

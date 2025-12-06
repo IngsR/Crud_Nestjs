@@ -38,11 +38,19 @@ export class ProductsService {
       maxPrice,
       sortBy = 'createdAt',
       order = 'DESC',
+      search,
     } = queryDto;
 
     const queryBuilder = this.productRepository
       .createQueryBuilder('product')
       .where('product.isActive = :isActive', { isActive: true });
+
+    if (search) {
+      queryBuilder.andWhere(
+        '(product.name ILIKE :search OR product.description ILIKE :search)',
+        { search: `%${search}%` },
+      );
+    }
 
     // Filter by categoryId (UUID)
     if (category) {
@@ -122,10 +130,9 @@ export class ProductsService {
   }
 
   async remove(id: string): Promise<void> {
-    const product = await this.findOne(id);
-
-    // Soft delete: set isActive to false
-    product.isActive = false;
-    await this.productRepository.save(product);
+    const result = await this.productRepository.softDelete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Product with ID "${id}" not found`);
+    }
   }
 }

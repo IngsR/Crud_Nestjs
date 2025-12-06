@@ -9,6 +9,9 @@ import { CategoriesModule } from './categories/categories.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { ProductsModule } from './products/products.module';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -37,6 +40,9 @@ import { ProductsModule } from './products/products.module';
     ]),
     ProductsModule,
     CategoriesModule,
+    UsersModule,
+    AuthModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [
