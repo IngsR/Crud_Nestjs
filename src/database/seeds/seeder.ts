@@ -1,28 +1,36 @@
+// Mengimpor NestFactory untuk membuat aplikasi context
 import { NestFactory } from '@nestjs/core';
+// Mengimpor utilitas TypeORM
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+// Mengimpor AppModule utama
 import { AppModule } from '../../app.module';
+// Mengimpor entitas Category dan Product
 import { Category } from '../../categories/entities/category.entity';
 import { Product } from '../../products/entities/product.entity';
 
+// Fungsi utama seeder
 async function seed() {
+  // Membuat application context tanpa menjalankan server HTTP
   const app = await NestFactory.createApplicationContext(AppModule);
 
   try {
+    // Mendapatkan repository Category dari app context
     const categoryRepository = app.get<Repository<Category>>(
       getRepositoryToken(Category),
     );
+    // Mendapatkan repository Product dari app context
     const productRepository = app.get<Repository<Product>>(
       getRepositoryToken(Product),
     );
 
     console.log('🌱 Seeding database...');
 
-    // Clear existing data
+    // Menghapus data lama (Product dulu karena foreign key ke Category)
     await productRepository.delete({});
     await categoryRepository.delete({});
 
-    // Create categories
+    // Mendefinisikan data kategori awal
     const categories = [
       {
         name: 'Electronics',
@@ -46,10 +54,11 @@ async function seed() {
       },
     ];
 
+    // Menyimpan kategori ke database
     const createdCategories = await categoryRepository.save(categories);
     console.log(`✅ Created ${createdCategories.length} categories`);
 
-    // Create products
+    // Mendefinisikan data produk awal yang berelasi dengan kategori
     const products = [
       // Electronics
       {
@@ -57,7 +66,7 @@ async function seed() {
         description: 'High-performance laptop with 16GB RAM and 512GB SSD',
         price: 1299.99,
         stock: 25,
-        categoryId: createdCategories[0].id,
+        categoryId: createdCategories[0].id, // Relasi ke createdCategories index 0
       },
       {
         name: 'Wireless Mouse',
@@ -142,6 +151,7 @@ async function seed() {
       },
     ];
 
+    // Menyimpan produk ke database
     const createdProducts = await productRepository.save(products);
     console.log(`✅ Created ${createdProducts.length} products`);
 
@@ -150,8 +160,10 @@ async function seed() {
     console.error('❌ Error seeding database:', error);
     throw error;
   } finally {
+    // Menutup koneksi aplikasi
     await app.close();
   }
 }
 
+// Menjalankan fungsi seed
 seed();
