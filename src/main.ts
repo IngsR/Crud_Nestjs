@@ -32,7 +32,7 @@ async function bootstrap() {
   SwaggerModule.setup('api/docs', app, document);
 
   // Menjalankan server pada port dari env atau default 3000
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
   console.log(
     `Application is running on: http://localhost:${process.env.PORT ?? 3000}`,
   );
