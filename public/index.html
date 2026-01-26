@@ -23,6 +23,8 @@
     <link rel="stylesheet" href="/css/molecules.css" />
     <link rel="stylesheet" href="/css/organisms.css" />
     <link rel="stylesheet" href="/css/pages.css" />
+    <link rel="stylesheet" href="/css/interactivity.css" />
+    <link rel="stylesheet" href="/css/snowfall.css" />
   </head>
   <body>
     <!-- Mobile Overlay -->
@@ -105,10 +107,10 @@
           </a>
         </div>
 
-        <div class="sidebar-section" data-admin-only>
-          <div class="sidebar-section-title">Administration</div>
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Quick Actions</div>
 
-          <a href="/users.html" class="nav-item" data-page="users">
+          <a href="/products.html?action=add" class="nav-item">
             <svg
               class="nav-icon"
               viewBox="0 0 24 24"
@@ -116,18 +118,30 @@
               stroke="currentColor"
               stroke-width="2"
             >
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
-            <span class="nav-label">Users</span>
+            <span class="nav-label">Add Product</span>
+          </a>
+
+          <a href="/categories.html?action=add" class="nav-item">
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            <span class="nav-label">Add Category</span>
           </a>
         </div>
       </nav>
 
       <div class="sidebar-footer">
-        <a href="/profile.html" class="nav-item" data-page="profile">
+        <a href="/profile.html" class="nav-item">
           <svg
             class="nav-icon"
             viewBox="0 0 24 24"
@@ -495,6 +509,7 @@
     <script src="/js/components.js"></script>
     <script src="/js/auth.js"></script>
     <script src="/js/dashboard.js"></script>
+    <script src="/js/snowfall.js"></script>
     <script>
       // Require authentication
       document.addEventListener('DOMContentLoaded', () => {

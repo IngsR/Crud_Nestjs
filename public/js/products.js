@@ -59,6 +59,15 @@ const Products = {
         btn.addEventListener('click', () => this.openModal());
       });
 
+    // View product button delegate
+    document.addEventListener('click', async (e) => {
+      const viewBtn = e.target.closest('[data-action="view-product"]');
+      if (viewBtn) {
+        const id = viewBtn.dataset.id;
+        await this.showDetails(id);
+      }
+    });
+
     // Product form submit
     const form = document.getElementById('product-form');
     if (form) {
@@ -167,6 +176,7 @@ const Products = {
   renderCard(product) {
     const isAdmin = Auth.isAdmin();
     return `
+    return `
       <div class="product-card">
         <div class="product-card-image">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -174,6 +184,11 @@ const Products = {
             <circle cx="8.5" cy="8.5" r="1.5"/>
             <polyline points="21 15 16 10 5 21"/>
           </svg>
+          ${
+            !product.isActive
+              ? '<span class="status-badge inactive">Inactive</span>'
+              : ''
+          }
         </div>
         <div class="product-card-body">
           <span class="product-card-category">${UI.escapeHtml(product.category?.name || 'Uncategorized')}</span>
@@ -185,10 +200,16 @@ const Products = {
             <div class="product-card-price">${UI.formatCurrency(product.price)}</div>
             <div class="product-card-stock">Stock: ${product.stock}</div>
           </div>
-          ${
-            isAdmin
-              ? `
-            <div class="product-card-actions">
+          <div class="product-card-actions">
+            <button class="btn btn-ghost btn-icon" data-action="view-product" data-id="${product.id}" title="View Details">
+               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                 <circle cx="12" cy="12" r="3"/>
+               </svg>
+            </button>
+            ${
+              isAdmin
+                ? `
               <button class="btn btn-ghost btn-icon" data-action="edit-product" data-id="${product.id}" title="Edit">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -200,10 +221,10 @@ const Products = {
                   <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
                 </svg>
               </button>
-            </div>
-          `
-              : ''
-          }
+            `
+                : ''
+            }
+          </div>
         </div>
       </div>
     `;
@@ -321,6 +342,10 @@ const Products = {
         form.querySelector('[name="stock"]').value = product.stock || 0;
         form.querySelector('[name="categoryId"]').value =
           product.categoryId || '';
+        if (form.querySelector('[name="isActive"]')) {
+          form.querySelector('[name="isActive"]').checked =
+            product.isActive !== false;
+        }
       } catch (error) {
         UI.toast.error('Error', 'Failed to load product details');
         return;
@@ -349,6 +374,10 @@ const Products = {
       stock: parseInt(form.querySelector('[name="stock"]').value) || 0,
       categoryId: form.querySelector('[name="categoryId"]').value || null,
     };
+
+    if (form.querySelector('[name="isActive"]')) {
+      data.isActive = form.querySelector('[name="isActive"]').checked;
+    }
 
     // Validate
     if (!data.name) {
@@ -402,6 +431,39 @@ const Products = {
       await this.load();
     } catch (error) {
       UI.toast.error('Error', error.message);
+    } finally {
+      UI.loading.hide();
+    }
+  },
+
+  // Show Details
+  async showDetails(id) {
+    try {
+      UI.loading.show();
+      const response = await API.products.getOne(id);
+      const product = response.data || response;
+
+      document.getElementById('view-name').textContent = product.name;
+      document.getElementById('view-category').textContent =
+        product.category?.name || 'Uncategorized';
+      document.getElementById('view-price').textContent = UI.formatCurrency(
+        product.price,
+      );
+      document.getElementById('view-stock').textContent = product.stock;
+      
+      const statusEl = document.getElementById('view-status');
+      if (product.isActive) {
+          statusEl.innerHTML = '<span class="badge badge-success">Active</span>';
+      } else {
+          statusEl.innerHTML = '<span class="badge badge-danger">Inactive</span>';
+      }
+      
+      document.getElementById('view-description').textContent =
+        product.description || 'No description';
+
+      UI.modal.open('view-product-modal');
+    } catch (error) {
+      UI.toast.error('Error', 'Failed to load details');
     } finally {
       UI.loading.hide();
     }

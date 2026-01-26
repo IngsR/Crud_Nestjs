@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="/css/molecules.css" />
     <link rel="stylesheet" href="/css/organisms.css" />
     <link rel="stylesheet" href="/css/pages.css" />
+    <link rel="stylesheet" href="/css/interactivity.css" />
   </head>
   <body>
     <!-- Mobile Overlay -->
@@ -97,24 +98,6 @@
               />
             </svg>
             <span class="nav-label">Categories</span>
-          </a>
-        </div>
-
-        <div class="sidebar-section" data-admin-only>
-          <div class="sidebar-section-title">Administration</div>
-
-          <a href="/users.html" class="nav-item">
-            <svg
-              class="nav-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-            </svg>
-            <span class="nav-label">Users</span>
           </a>
         </div>
       </nav>
@@ -399,6 +382,53 @@
             <button type="submit" class="btn btn-primary">Save Category</button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- View Category Modal -->
+    <div id="view-category-modal" class="modal-overlay">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 class="modal-title">Category Details</h3>
+          <button class="modal-close" aria-label="Close">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="details-grid">
+            <div class="detail-item full-width">
+              <label class="detail-label">Name</label>
+              <div class="detail-value" id="view-name"></div>
+            </div>
+            <div class="detail-item">
+              <label class="detail-label">Status</label>
+              <div class="detail-value" id="view-status"></div>
+            </div>
+            <div class="detail-item">
+              <label class="detail-label">Products Count</label>
+              <div class="detail-value" id="view-products-count"></div>
+            </div>
+            <div class="detail-item full-width">
+              <label class="detail-label">Description</label>
+              <div class="detail-value description" id="view-description"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-close">
+            Close
+          </button>
+        </div>
       </div>
     </div>
 

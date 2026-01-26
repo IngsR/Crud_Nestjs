@@ -120,7 +120,7 @@ const Dashboard = {
       container.innerHTML = products
         .map(
           (product) => `
-        <div class="flex items-center gap-3 mb-3">
+        <a href="/products.html" class="flex items-center gap-3 mb-3 hover-bg p-2 rounded" style="text-decoration: none; color: inherit;">
           <div class="avatar avatar-sm">
             ${product.name.charAt(0).toUpperCase()}
           </div>
@@ -128,7 +128,7 @@ const Dashboard = {
             <div class="font-medium text-sm">${UI.escapeHtml(product.name)}</div>
             <div class="text-xs text-muted">${UI.formatCurrency(product.price)}</div>
           </div>
-        </div>
+        </a>
       `,
         )
         .join('');

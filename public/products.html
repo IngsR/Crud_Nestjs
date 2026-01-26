@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="/css/molecules.css" />
     <link rel="stylesheet" href="/css/organisms.css" />
     <link rel="stylesheet" href="/css/pages.css" />
+    <link rel="stylesheet" href="/css/interactivity.css" />
   </head>
   <body>
     <!-- Mobile Overlay -->
@@ -99,26 +100,6 @@
               />
             </svg>
             <span class="nav-label">Categories</span>
-          </a>
-        </div>
-
-        <div class="sidebar-section" data-admin-only>
-          <div class="sidebar-section-title">Administration</div>
-
-          <a href="/users.html" class="nav-item">
-            <svg
-              class="nav-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-            </svg>
-            <span class="nav-label">Users</span>
           </a>
         </div>
       </nav>
@@ -427,6 +408,19 @@
                 <option value="">Select Category</option>
               </select>
             </div>
+
+            <div class="form-group">
+              <label class="checkbox-container">
+                <input
+                  type="checkbox"
+                  id="product-active"
+                  name="isActive"
+                  checked
+                />
+                <span class="checkmark"></span>
+                <span class="label-text">Active Product</span>
+              </label>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary modal-close">
@@ -435,6 +429,61 @@
             <button type="submit" class="btn btn-primary">Save Product</button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- View Product Modal -->
+    <div id="view-product-modal" class="modal-overlay">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 class="modal-title">Product Details</h3>
+          <button class="modal-close" aria-label="Close">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="details-grid">
+            <div class="detail-item">
+              <label class="detail-label">Name</label>
+              <div class="detail-value" id="view-name"></div>
+            </div>
+            <div class="detail-item">
+              <label class="detail-label">Category</label>
+              <div class="detail-value" id="view-category"></div>
+            </div>
+            <div class="detail-item">
+              <label class="detail-label">Price</label>
+              <div class="detail-value price" id="view-price"></div>
+            </div>
+            <div class="detail-item">
+              <label class="detail-label">Stock</label>
+              <div class="detail-value" id="view-stock"></div>
+            </div>
+            <div class="detail-item full-width">
+              <label class="detail-label">Status</label>
+              <div class="detail-value" id="view-status"></div>
+            </div>
+            <div class="detail-item full-width">
+              <label class="detail-label">Description</label>
+              <div class="detail-value description" id="view-description"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-close">
+            Close
+          </button>
+        </div>
       </div>
     </div>
 

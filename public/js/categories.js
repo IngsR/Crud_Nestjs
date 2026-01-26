@@ -45,6 +45,12 @@ const Categories = {
     document.addEventListener('click', async (e) => {
       const editBtn = e.target.closest('[data-action="edit-category"]');
       const deleteBtn = e.target.closest('[data-action="delete-category"]');
+      const viewBtn = e.target.closest('[data-action="view-category"]');
+
+      if (viewBtn) {
+        const id = viewBtn.dataset.id;
+        await this.showDetails(id);
+      }
 
       if (editBtn) {
         const id = editBtn.dataset.id;
@@ -157,8 +163,13 @@ const Categories = {
               </button>
             </div>
           `
-              : '-'
           }
+          <button class="btn btn-ghost btn-sm" data-action="view-category" data-id="${category.id}" title="View Details">
+             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                 <circle cx="12" cy="12" r="3"/>
+             </svg>
+          </button>
         </td>
       </tr>
     `;
@@ -324,6 +335,34 @@ const Categories = {
       await this.load();
     } catch (error) {
       UI.toast.error('Error', error.message);
+    } finally {
+      UI.loading.hide();
+    }
+  },
+
+  // Show Details
+  async showDetails(id) {
+    try {
+      UI.loading.show();
+      const response = await API.categories.getOne(id);
+      const category = response.data || response;
+
+      document.getElementById('view-name').textContent = category.name;
+      document.getElementById('view-products-count').textContent = category.products?.length || 0;
+      
+      const statusEl = document.getElementById('view-status');
+      if (category.isActive) {
+          statusEl.innerHTML = '<span class="badge badge-success">Active</span>';
+      } else {
+          statusEl.innerHTML = '<span class="badge badge-danger">Inactive</span>';
+      }
+      
+      document.getElementById('view-description').textContent =
+        category.description || 'No description';
+
+      UI.modal.open('view-category-modal');
+    } catch (error) {
+      UI.toast.error('Error', 'Failed to load details');
     } finally {
       UI.loading.hide();
     }
